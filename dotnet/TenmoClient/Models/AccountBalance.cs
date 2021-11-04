@@ -10,6 +10,8 @@ namespace TenmoClient.Models
         public int User_Id { get; set; }
         public decimal Balance { get; set; }
 
+        public AccountBalance()
+        { }
         public AccountBalance(int account_id, int user_id, int balance)
         {
             this.Account_Id = account_id;
