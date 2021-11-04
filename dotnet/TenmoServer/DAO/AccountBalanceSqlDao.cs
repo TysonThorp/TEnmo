@@ -15,7 +15,7 @@ namespace TenmoServer.DAO
         {
             connectionString = dbConnectionString;
         }
-        public AccountBalance GetBalance(int account_id)
+        public AccountBalance GetBalance(int user_id)
         {
             AccountBalance accountBalance = null;
 
@@ -25,8 +25,8 @@ namespace TenmoServer.DAO
                 {
                     conn.Open();
 
-                    SqlCommand cmd = new SqlCommand("SELECT balance FROM accounts WHERE account_id = @account_id", conn);
-                    cmd.Parameters.AddWithValue("@account_id", account_id);
+                    SqlCommand cmd = new SqlCommand("SELECT balance FROM accounts WHERE user_id = @user_id", conn);
+                    cmd.Parameters.AddWithValue("@user_id", user_id);
                     SqlDataReader reader = cmd.ExecuteReader();
 
                     if (reader.Read())
