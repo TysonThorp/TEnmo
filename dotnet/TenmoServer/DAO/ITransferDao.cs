@@ -9,8 +9,12 @@ namespace TenmoServer.DAO
     public interface ITransferDao
     {
 
-        AccountBalance Transfer(int userId, decimal amount);
+        AccountBalance Transfer(int userId, int account_to, decimal amount);
 
+        Transaction GetAllTransactions(int userId);
+
+        Transaction GetTransaction(int transferId);
+        
         
  }
 }
