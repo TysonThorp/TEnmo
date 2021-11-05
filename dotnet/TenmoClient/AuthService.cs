@@ -71,19 +71,20 @@ namespace TenmoClient
             }
         }
 
-        public AccountBalance GetBalance()
+        public decimal? GetBalance()
         {
             RestRequest request = new RestRequest(API_BASE_URL + "balance");
             IRestResponse<AccountBalance> response = client.Get<AccountBalance>(request);
-
+            
             if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
             {
                 ProcessErrorResponse(response);
             }
             else
             {
-                return response.Data;
+                return response.Data.Balance;
             }
+
             return null;
         }
 

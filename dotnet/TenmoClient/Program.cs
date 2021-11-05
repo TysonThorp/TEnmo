@@ -95,10 +95,11 @@ namespace TenmoClient
                 {
                     try
                     {
-                        AccountBalance balance = authService.GetBalance();
+                        decimal? balance = authService.GetBalance();
                         if (balance != null)
                         {
-                            return balance;
+
+                            Console.WriteLine("Your balance is $" + balance);
                         }
                     }
                     catch (Exception ex)
