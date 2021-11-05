@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TenmoServer.DAO
 {
-    public class TransferSqlDao : ITransferDao
+    public class TransferSqlDao 
     {
         private readonly string connectionString;
 
@@ -14,9 +14,10 @@ namespace TenmoServer.DAO
         {
             connectionString = dbConnectionString;
         }
-        public TransferSqlDao Transfer(int user_id, decimal amount)
+        public string Transfer(int user_id, decimal amount)
         {
             //AccountBalance accountBalance = null;
+            string success = "Transfer Successful";
 
             try
             {
@@ -24,24 +25,23 @@ namespace TenmoServer.DAO
                 {
                     conn.Open();
 
-                    SqlCommand cmd = new SqlCommand("SELECT u.user_name, a.user_id FROM accounts a JOIN users u ON u.user_id = a.user_id : SELECT t.account_from, t.account_to, t.amount, a.account_id, a.user_id FROM transfers t JOIN accounts a ON a.account_id = t.transfer_id JOIN users u ON u.user_id = a.user_id", conn);
-                    cmd.Parameters.AddWithValue("@a.user_id", user_id);
-                    cmd.Parameters.AddWithValue("@t.amount", amount);
+                    SqlCommand cmd = new SqlCommand("UPDATE transfers SET balance = balance - amount FROM transfers t JOIN accounts a ON a.account_id = transfers.account_from :" +
+                        " UPDATE transfers SET balance = balance + amount FROM transfers t JOIN accounts a ON a.account_id = transfers.account_from : " +
+                        " INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) VALUES (2, 2, account_from, account_to, amount)", conn);
+                   
 
                     SqlDataReader reader = cmd.ExecuteReader();
+                    
+                    return success;
 
-                    if (reader.Read())
-                    {
-                        accountBalance = GetBalanceFromReader(reader);
-                    }
                 }
             }
             catch (SqlException)
             {
-                throw;
+                throw new Exception("Error adding transfer");
             }
 
-            return accountBalance;
+       
         }
 
 
