@@ -9,11 +9,11 @@ namespace TenmoServer.DAO
     public interface ITransferDao
     {
 
-        AccountBalance Transfer(int userId, int account_to, decimal amount);
+        string Transfer(int userId_from, int userId_to, decimal amount);
 
-        Transaction GetAllTransactions(int userId);
+        List<Transaction> GetAllTransactions(int userId);
 
-        Transaction GetTransaction(int transferId);
+        Transaction GetTransactionById(int transferId);
         
         
  }

@@ -7,7 +7,7 @@ using TenmoServer.Models;
 
 namespace TenmoServer.DAO
 {
-    public class TransferSqlDao
+    public class TransferSqlDao : ITransferDao
     {
         private readonly string connectionString;
 
@@ -15,6 +15,19 @@ namespace TenmoServer.DAO
         {
             connectionString = dbConnectionString;
         }
+
+        public TransferSqlDao()
+        {
+        }
+
+
+        /*
+         * NEED A NEW METHOD FOR THE INSERT BELOW (tracking transaction)
+         * NEED A METHOD TO DERIVE ACCOUNT FROM AND ACCOUNT TO ID FROM THE USER ID (for the insert)
+         * OPTIONAL BUT HELPFUL IF WANT TO DO SOME OPTIONAL STUFF - SPLIT UP THE ADD AND SUBTRACT
+         ***** REMEMBER CODERS - THE CLIENT IS GOING TO CALL THE METHODS TO MAKE IT HAPPEN, IE: DON'T MAKE THE SERVER DO THINGS THE CLIENT SHOULD DO
+                WHEN INITIATING A TRANSFER THE CLIENT WILL CALL THE METHODS TO UPDATE THE BALANCES AND ALSO TO INSERT A TRANSACTION RECORD *****
+         */
         public string Transfer(int userId_from, int userId_to, decimal amount)
         {
             //AccountBalance accountBalance = null;
@@ -26,15 +39,20 @@ namespace TenmoServer.DAO
                 {
                     conn.Open();
 
+            
+
                     SqlCommand cmd = new SqlCommand("UPDATE accounts SET balance = balance - @amount WHERE user_id = @userId_from : " +
                         "UPDATE accounts SET balance = balance + @amount WHERE user_id = @userId_to : " +
-                        "INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) VALUES (2, 2, @userId_from, @userId_to, @amount)", conn);
+                        "INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) VALUES (2, 2, @account_from_id, @account_to_id, @amount)", conn);
+
 
                     cmd.Parameters.AddWithValue("@amount", amount);
                     cmd.Parameters.AddWithValue("@userId_from", userId_from);
                     cmd.Parameters.AddWithValue("@userId_to", userId_to);
+                   // cmd.Parameters.AddWithValue("@account_from_id", needed);
+                    //cmd.Parameters.AddWithValue("@account_to_id", needed);
 
-                    SqlDataReader reader = cmd.ExecuteReader();
+                    cmd.ExecuteNonQuery();
 
                     return success;
 

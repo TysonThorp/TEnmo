@@ -43,13 +43,13 @@ namespace TenmoServer.Controllers
 
         [HttpPost("transfer/{account_to}/{amount}")]
 
-        public ActionResult<AccountBalance> Transfer(int user_id, int account_to, decimal amount)
+        public ActionResult<AccountBalance> Transfer(int account_to, decimal amount)
         {
             int userId = Convert.ToInt32(User.FindFirst("sub")?.Value);
             int accountTo = Convert.ToInt32(account_to);
             decimal amountTwo = Convert.ToDecimal(amount);
 
-            AccountBalance balance = _transferDao.Transfer(userId, accountTo, amountTwo);
+           string balance = _transferDao.Transfer(userId, accountTo, amountTwo);
             
             if (balance != null)
             {
@@ -62,13 +62,13 @@ namespace TenmoServer.Controllers
         }
 
         [HttpGet("transactions")]
-        public ActionResult<List<Transaction>> GetTransactions(int user_id)
+        public ActionResult<List<Transaction>> GetTransactions()
         {
 
-            int user = Convert.ToInt32(User.FindFirst("sub")?.Value);  //this gets the id from the token (exists already since the user logged in)
-            user_id = user;
+            int user_id = Convert.ToInt32(User.FindFirst("sub")?.Value);  //this gets the id from the token (exists already since the user logged in)
+            
 
-            Transaction transactions = _transferDao.GetAllTransactions(user_id);
+            List<Transaction> transactions = _transferDao.GetAllTransactions(user_id);
 
             if (transactions != null)
             {
@@ -80,6 +80,23 @@ namespace TenmoServer.Controllers
             }
 
 
+
+        }
+
+        [HttpGet("transactions/{transfer_id}")]
+
+        public Transaction GetTransactionById(int transfer_id)
+    {
+        Transaction transaction = _transferDao.GetTransactionById(transfer_id);
+
+        if (transaction != null)
+        {
+            return transaction;
+        }
+        else
+        {
+            return null;
         }
     }
+}
 }
