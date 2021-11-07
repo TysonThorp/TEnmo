@@ -5,6 +5,7 @@ using TenmoServer.Models;
 using TenmoServer.DAO;
 using System.Collections.Generic;
 using System;
+using TenmoServer.Security;
 
 namespace TenmoServer.Controllers
 {
@@ -20,7 +21,6 @@ namespace TenmoServer.Controllers
           
             _accountDao = accountDao;
         }
-
 
         [HttpGet("balance")]  //to get this you need to pass a token b/c of authorize
         public ActionResult<AccountBalance> GetBalance()

@@ -4,6 +4,10 @@ using System;
 using TenmoClient.Exceptions;
 using TenmoClient.Models;
 
+using System.Transactions;
+
+using System.Collections.Generic;
+
 namespace TenmoClient
 {
     public class AuthService
@@ -71,8 +75,125 @@ namespace TenmoClient
             }
         }
 
+        public decimal? GetBalance()
+        {
+            RestRequest request = new RestRequest(API_BASE_URL + "balance");
+            IRestResponse<AccountBalance> response = client.Get<AccountBalance>(request);
 
 
+            if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
+            {
+                ProcessErrorResponse(response);
+            }
+            else
+            {
+                return response.Data.Balance;
+            }
 
+            return null;
+        }
+        public string SendTEBucks()
+        {
+            RestRequest request = new RestRequest(API_BASE_URL + "transactions/send");
+            IRestResponse<Transaction> response = client.Post<Transaction>(request);
+            UserService.GetToken();
+
+            if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
+            {
+                ProcessErrorResponse(response);
+            }
+            else
+            {
+                return response.StatusCode.ToString();
+            }
+
+            return null;
+        }
+
+        public Transaction GetTransactionById(int id)
+        {
+            RestRequest request = new RestRequest(API_BASE_URL + "transactions/{id}");
+            request.AddUrlSegment("id", id);
+            IRestResponse<Transaction> response = client.Get<Transaction>(request);
+
+            if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
+            {
+                ProcessErrorResponse(response);
+            }
+            else
+            {
+                return response.Data;
+            }
+
+            return null;
+        }
+
+        public string RequestTeBucks()
+        {
+            RestRequest request = new RestRequest(API_BASE_URL + "transactions/request");
+            IRestResponse<Transaction> response = client.Post<Transaction>(request);
+
+            if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
+            {
+                ProcessErrorResponse(response);
+            }
+            else
+            {
+                return response.StatusCode.ToString();
+            }
+
+            return null;
+        }
+
+        public List<Transaction> ViewPastTransfers(int id)
+        {
+            RestRequest request = new RestRequest(API_BASE_URL + "transactions");
+            request.AddUrlSegment("id", id);
+            IRestResponse<List<Transaction>> response = client.Get<List<Transaction>>(request);
+
+            if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
+            {
+                ProcessErrorResponse(response);
+            }
+            else
+            {
+                return response.Data;
+            }
+
+            return null;
+        }
+
+        public List<Transaction> ViewPendingTransfer(int id)
+        {
+            RestRequest request = new RestRequest(API_BASE_URL + "transactions");
+            request.AddUrlSegment("id", id);
+            IRestResponse<List<Transaction>> response = client.Get<List<Transaction>>(request);
+
+            if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
+            {
+                ProcessErrorResponse(response);
+            }
+            else
+            {
+                return response.Data;
+            }
+
+            return null;
+        }
+
+        private void ProcessErrorResponse(IRestResponse response)
+        {
+            if (response.ResponseStatus != ResponseStatus.Completed)
+            {
+                throw new NoResponseException("Error occurred - unable to reach server.", response.ErrorException);
+            }
+            else if (!response.IsSuccessful)
+            {
+                throw new NonSuccessException((int)response.StatusCode);
+            }
+        }
     }
+
+
 }
+

@@ -9,7 +9,7 @@ namespace TenmoClient
     {
         private static readonly ConsoleService consoleService = new ConsoleService();
         private static readonly AuthService authService = new AuthService();
-        private static readonly AccountService accountService = new AccountService();
+       
         private static readonly TransferService transferService = new TransferService();
 
         static void Main(string[] args)
@@ -97,7 +97,7 @@ namespace TenmoClient
                 {
                     try
                     {
-                        decimal? balance = accountService.GetBalance();
+                        decimal? balance = authService.GetBalance();
                         if (balance != null)
                         {
 

@@ -5,6 +5,7 @@ using TenmoServer.Models;
 using TenmoServer.DAO;
 using System.Collections.Generic;
 using System;
+using TenmoServer.Security;
 
 namespace TenmoServer.Controllers
 {
