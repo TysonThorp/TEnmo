@@ -16,20 +16,10 @@ namespace TenmoServer.DAO
             connectionString = dbConnectionString;
         }
 
-        public TransferSqlDao()
-        {
-        }
 
-
-
-        /*
-         * (done) NEED A NEW METHOD FOR THE INSERT BELOW (tracking transaction)
-         * (done) --- note this will be fed stuff from the client side --- NEED A METHOD TO DERIVE ACCOUNT FROM AND ACCOUNT TO ID FROM THE USER ID (for the insert)
-         *  (not done) OPTIONAL BUT HELPFUL IF WANT TO DO SOME OPTIONAL STUFF - SPLIT UP THE ADD AND SUBTRACT
-         ***** REMEMBER CODERS - THE CLIENT IS GOING TO CALL THE METHODS TO MAKE IT HAPPEN, IE: DON'T MAKE THE SERVER DO THINGS THE CLIENT SHOULD DO
-                WHEN INITIATING A TRANSFER THE CLIENT WILL CALL THE METHODS TO UPDATE THE BALANCES AND ALSO TO INSERT A TRANSACTION RECORD *****
-         */
-
+         //***** REMEMBER CODERS - THE CLIENT IS GOING TO CALL THE METHODS TO MAKE IT HAPPEN, IE: DON'T MAKE THE SERVER DO THINGS THE CLIENT SHOULD DO
+         //       WHEN INITIATING A TRANSFER THE CLIENT WILL CALL THE METHODS TO UPDATE THE BALANCES AND ALSO TO INSERT A TRANSACTION RECORD *****
+         
         public string SendTEBucks(int userId_from, int userId_to, decimal amount)
         {
             AccountBalance accountBalance = new AccountBalance();
@@ -98,41 +88,7 @@ namespace TenmoServer.DAO
             }
 
         }
-        //public string Transfer(int userId_from, int userId_to, decimal amount)
-        //{
-            
-        //    string success = "Transfer Successful";
-
-        //    try
-        //    {
-        //        using (SqlConnection conn = new SqlConnection(connectionString))
-        //        {
-        //            conn.Open();
-
-            
-
-        //            SqlCommand cmd = new SqlCommand("UPDATE accounts SET balance = balance - @amount WHERE user_id = @userId_from : " +
-        //                "UPDATE accounts SET balance = balance + @amount WHERE user_id = @userId_to : " +
-        //                "INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) VALUES (2, 2, @account_from_id, @account_to_id, @amount)", conn);
-
-
-        //            cmd.Parameters.AddWithValue("@amount", amount);
-        //            cmd.Parameters.AddWithValue("@userId_from", userId_from);
-        //            cmd.Parameters.AddWithValue("@userId_to", userId_to);
-        //            // cmd.Parameters.AddWithValue("@account_from_id", needed); 
-        //            //cmd.Parameters.AddWithValue("@account_to_id", needed); 
-
-        //            cmd.ExecuteNonQuery();
-
-        //            return success;
-
-        //        }
-        //    }
-        //    catch (SqlException)
-        //    {
-        //        throw new Exception("Error adding transfer");
-        //    }
-        //}
+    
         public List<Transaction> ViewPastTransfers(int userId)
         {
             List<Transaction> transactions = new List<Transaction>();
