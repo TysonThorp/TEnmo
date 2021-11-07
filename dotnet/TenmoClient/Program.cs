@@ -9,6 +9,8 @@ namespace TenmoClient
     {
         private static readonly ConsoleService consoleService = new ConsoleService();
         private static readonly AuthService authService = new AuthService();
+        private static readonly AccountService accountService = new AccountService();
+        private static readonly TransferService transferService = new TransferService();
 
         static void Main(string[] args)
         {
@@ -95,7 +97,7 @@ namespace TenmoClient
                 {
                     try
                     {
-                        decimal? balance = authService.GetBalance();
+                        decimal? balance = accountService.GetBalance();
                         if (balance != null)
                         {
 
@@ -107,8 +109,6 @@ namespace TenmoClient
                         Console.WriteLine(ex.Message);
                     }
                 
-
-
             }
                 else if (menuSelection == 2)
                 {
