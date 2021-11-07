@@ -17,7 +17,6 @@ namespace TenmoServer.Controllers
        
         public AccountController(IAccountBalanceDao accountDao)
         {
-          
             _accountDao = accountDao;
         }
 

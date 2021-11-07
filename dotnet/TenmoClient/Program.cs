@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using TenmoClient.Models;
+using TenmoClient.Exceptions;
+
+
 
 
 namespace TenmoClient
@@ -112,11 +115,15 @@ namespace TenmoClient
             }
                 else if (menuSelection == 2)
                 {
-
+                    //List<TransferService> viewPastTransfers = transferService.ViewPastTransfers();
+                    
+                    //Console.Write("These are all the transfers you have made in the past: " + viewPastTransfers);                  
                 }
                 else if (menuSelection == 3)
                 {
+                    //List<TransferService> viewPendingTransfers = transferService.PendingTransactions();
 
+                    //Console.Write("These are all the transfers that are currently pending: " + viewPendingTransfers);
                 }
                 else if (menuSelection == 4)
                 {

@@ -1,6 +1,7 @@
 ﻿using RestSharp;
 using RestSharp.Authenticators;
 using System;
+using System.Collections.Generic;
 using System.Transactions;
 using TenmoClient.Exceptions;
 using TenmoClient.Models;
@@ -37,8 +38,25 @@ namespace TenmoClient
 
             return null;
         }
+        public List<Transaction> ViewPastTransfers()
+        {
+            RestRequest request = new RestRequest(API_BASE_URL + "transactions");
+            IRestResponse<Transaction> response = client.Post<Transaction>(request);
 
-            private void ProcessErrorResponse(IRestResponse response)
+            if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
+            {
+                ProcessErrorResponse(response);
+            }
+            else
+            {
+                return (List<Transaction>)response;
+            }
+
+            return null;
+        }
+
+
+        private void ProcessErrorResponse(IRestResponse response)
         {
             if (response.ResponseStatus != ResponseStatus.Completed)
             {
@@ -48,6 +66,13 @@ namespace TenmoClient
             {
                 throw new NonSuccessException((int)response.StatusCode);
             }
+        }
+        public List<Transaction> PendingTransactions()
+        {
+            List<Transaction> pendingTransactions = new List<Transaction>();
+
+            return pendingTransactions;
+
         }
     }
 }
