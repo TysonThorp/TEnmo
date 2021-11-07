@@ -18,5 +18,7 @@ namespace TenmoServer.Models
         public int Account_To { get; set; }
 
         public decimal Amount { get; set; }
+
+        public int Account_Id { get; set; }
     }
 }

@@ -41,62 +41,62 @@ namespace TenmoServer.Controllers
 
 
 
-        [HttpPost("transfer/{account_to}/{amount}")]
+        //[HttpPost("transfer/{account_to}/{amount}")]
 
-        public ActionResult<AccountBalance> Transfer(int account_to, decimal amount)
-        {
-            int userId = Convert.ToInt32(User.FindFirst("sub")?.Value);
-            int accountTo = Convert.ToInt32(account_to);
-            decimal amountTwo = Convert.ToDecimal(amount);
+        //public ActionResult<AccountBalance> Transfer(int account_to, decimal amount)
+        //{
+        //    int userId = Convert.ToInt32(User.FindFirst("sub")?.Value);
+        //    int accountTo = Convert.ToInt32(account_to);
+        //    decimal amountTwo = Convert.ToDecimal(amount);
 
-           string balance = _transferDao.Transfer(userId, accountTo, amountTwo);
-            
-            if (balance != null)
-            {
-                return Ok(balance);
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
+        //   string balance = _transferDao.Transfer(userId, accountTo, amountTwo);
 
-        [HttpGet("transactions")]
-        public ActionResult<List<Transaction>> GetTransactions()
-        {
+        //    if (balance != null)
+        //    {
+        //        return Ok(balance);
+        //    }
+        //    else
+        //    {
+        //        return NotFound();
+        //    }
+        //}
 
-            int user_id = Convert.ToInt32(User.FindFirst("sub")?.Value);  //this gets the id from the token (exists already since the user logged in)
-            
+        //[HttpGet("transactions")]
+        //public ActionResult<List<Transaction>> GetTransactions()
+        //{
 
-            List<Transaction> transactions = _transferDao.GetAllTransactions(user_id);
-
-            if (transactions != null)
-            {
-                return Ok(transactions);
-            }
-            else
-            {
-                return NotFound();
-            }
+        //    int user_id = Convert.ToInt32(User.FindFirst("sub")?.Value);  //this gets the id from the token (exists already since the user logged in)
 
 
+        //    List<Transaction> transactions = _transferDao.GetAllTransactions(user_id);
 
-        }
+        //    if (transactions != null)
+        //    {
+        //        return Ok(transactions);
+        //    }
+        //    else
+        //    {
+        //        return NotFound();
+        //    }
+
+
+
+        //}
 
         [HttpGet("transactions/{transfer_id}")]
 
         public Transaction GetTransactionById(int transfer_id)
-    {
-        Transaction transaction = _transferDao.GetTransactionById(transfer_id);
+        {
+            Transaction transaction = _transferDao.GetTransactionById(transfer_id);
 
-        if (transaction != null)
-        {
-            return transaction;
-        }
-        else
-        {
-            return null;
+            if (transaction != null)
+            {
+                return transaction;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
-}
 }
