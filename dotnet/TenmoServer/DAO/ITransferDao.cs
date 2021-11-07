@@ -20,9 +20,6 @@ namespace TenmoServer.DAO
         public List<Transaction> PendingTransactions(int user_id);
 
 
-        //List<Transaction> GetAllTransactions(int userId);
-
-
 
 
     }
