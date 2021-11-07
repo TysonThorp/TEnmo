@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TenmoClient.Models;
 
+
 namespace TenmoClient
 {
     class Program
@@ -72,6 +73,8 @@ namespace TenmoClient
             int menuSelection = -1;
             while (menuSelection != 0)
             {
+                string logInOut = UserService.IsLoggedIn() ? "Log out" : "Log in";
+
                 Console.WriteLine("");
                 Console.WriteLine("Welcome to TEnmo! Please make a selection: ");
                 Console.WriteLine("1: View your current balance");
@@ -90,8 +93,23 @@ namespace TenmoClient
                 }
                 else if (menuSelection == 1)
                 {
+                    try
+                    {
+                        decimal? balance = authService.GetBalance();
+                        if (balance != null)
+                        {
 
-                }
+                            Console.WriteLine("Your balance is $" + balance);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                
+
+
+            }
                 else if (menuSelection == 2)
                 {
 
