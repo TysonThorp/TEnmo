@@ -7,7 +7,7 @@ namespace TenmoClient
 {
     public class AuthService
     {
-        private readonly static string API_BASE_URL = "https://localhost:44315/";
+        private readonly static string API_BASE_URL = "http://localhost:53041/";
         private readonly IRestClient client = new RestClient();
 
         //login endpoints
