@@ -81,7 +81,7 @@ namespace TenmoServer.Controllers
 
         [HttpGet("transactions/past")]
 
-        public ActionResult<List<Transactions>> ViewPastTransfers(int id)
+        public ActionResult<List<Transactions>> ViewPastTransfers()
         {
             int user_id = Convert.ToInt32(User.FindFirst("sub")?.Value);
 
@@ -100,7 +100,7 @@ namespace TenmoServer.Controllers
 
         [HttpGet("transactions/pending")]
 
-        public ActionResult<List<Transactions>> ViewPendingTransfers(int userId)
+        public ActionResult<List<Transactions>> ViewPendingTransfers()
         {
             int user_id = Convert.ToInt32(User.FindFirst("sub")?.Value);
 

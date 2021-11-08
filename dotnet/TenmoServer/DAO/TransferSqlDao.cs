@@ -99,7 +99,8 @@ namespace TenmoServer.DAO
                 {
                     conn.Open();
 
-                    SqlCommand cmd = new SqlCommand("SELECT * FROM transfers WHERE account_to = @accountId OR account_from = @accountId", conn);
+                    SqlCommand cmd = new SqlCommand("SELECT transfer_id, account_from, account_to, amount " +
+                        "FROM transfers WHERE account_to = @accountId OR account_from = @accountId", conn);
 
                     cmd.Parameters.AddWithValue("@accountId", accountId);
 
@@ -219,7 +220,7 @@ namespace TenmoServer.DAO
                 transaction.Transfer_Status_Id = Convert.ToInt32(reader["transfer_status_id"]);
                 transaction.Account_From = Convert.ToInt32(reader["account_from"]);
                 transaction.Account_To = Convert.ToInt32(reader["account_to"]);
-                transaction.Amount = Convert.ToDecimal(reader["amount"]);
+                transaction.Amount = Convert.ToDecimal(reader["amount"])
 
             }
 

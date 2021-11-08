@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TenmoClient.Models;
-using TenmoServer.Models;
+
 
 namespace TenmoClient
 {
@@ -112,10 +112,25 @@ namespace TenmoClient
             }
                 else if (menuSelection == 2)
                 {
-                    Console.WriteLine("Here is your list of transactions.");
+                    Console.WriteLine("------------------------------");
+                    Console.WriteLine("Transfers");
+                    Console.WriteLine("ID         From/To            Amount");
+                    Console.WriteLine("------------------------------");
 
 
-                    Console.WriteLine(transferService.ViewPastTransfers());
+                    //Console.WriteLine(transferService.ViewPastTransfers());
+
+                    List<Transactions> transactions = transferService.ViewPastTransfers();
+
+                    foreach (Transactions transaction in transactions)
+                    {
+                       var transfer_id = transaction.Transfer_Id;
+                       var amount = transaction.Amount;
+
+                        Console.WriteLine(transfer_id + amount);
+                   
+                    }
+                    Console.WriteLine("Please enter transfer ID to view details (0 to cancel)");
                     
                 }
                 else if (menuSelection == 3)
