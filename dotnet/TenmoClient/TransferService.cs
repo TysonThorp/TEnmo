@@ -19,6 +19,8 @@ namespace TenmoClient
         
         public string SendTEBucks()
         {
+            client.Authenticator = new JwtAuthenticator(UserService.GetToken());
+
             RestRequest request = new RestRequest(API_BASE_URL + "transactions/send");
             IRestResponse<Transaction> response = client.Post<Transaction>(request);
             UserService.GetToken();
@@ -37,6 +39,8 @@ namespace TenmoClient
 
         public Transaction GetTransactionById(int id)
         {
+            client.Authenticator = new JwtAuthenticator(UserService.GetToken());
+
             RestRequest request = new RestRequest(API_BASE_URL + "transactions/{id}");
             request.AddUrlSegment("id", id);
             IRestResponse<Transaction> response = client.Get<Transaction>(request);
@@ -55,6 +59,8 @@ namespace TenmoClient
 
         public string RequestTeBucks()
         {
+            client.Authenticator = new JwtAuthenticator(UserService.GetToken());
+
             RestRequest request = new RestRequest(API_BASE_URL + "transactions/request");
             IRestResponse<Transaction> response = client.Post<Transaction>(request);
 
@@ -72,7 +78,9 @@ namespace TenmoClient
 
         public List<Transaction> ViewPastTransfers(int id)
         {
-            RestRequest request = new RestRequest(API_BASE_URL + "transactions");
+            client.Authenticator = new JwtAuthenticator(UserService.GetToken());
+
+            RestRequest request = new RestRequest(API_BASE_URL + "transactions/past");
             request.AddUrlSegment("id", id);
             IRestResponse<List<Transaction>> response = client.Get<List<Transaction>>(request);
 
@@ -90,7 +98,9 @@ namespace TenmoClient
 
         public List<Transaction> ViewPendingTransfer(int id)
         {
-            RestRequest request = new RestRequest(API_BASE_URL + "transactions");
+            client.Authenticator = new JwtAuthenticator(UserService.GetToken());
+
+            RestRequest request = new RestRequest(API_BASE_URL + "transactions/pending");
             request.AddUrlSegment("id", id);
             IRestResponse<List<Transaction>> response = client.Get<List<Transaction>>(request);
 

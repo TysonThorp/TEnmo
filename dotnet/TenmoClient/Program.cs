@@ -112,7 +112,17 @@ namespace TenmoClient
             }
                 else if (menuSelection == 2)
                 {
+                    try
 
+                    {
+                        int id = UserService.GetUserId();
+                        List<System.Transactions.Transaction> transactions1 = transferService.ViewPastTransfers(id);
+                        
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
                 }
                 else if (menuSelection == 3)
                 {

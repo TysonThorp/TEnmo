@@ -99,7 +99,9 @@ namespace TenmoServer.DAO
                 {
                     conn.Open();
 
-                    SqlCommand cmd = new SqlCommand("SELECT * FROM transfers JOIN accounts ON accounts.account_id = transfers.account_to WHERE transfers.account_from = accounts.account_id OR transfers.account_to = accounts.account_id AND accounts.account_id = @userId ", conn);
+                    SqlCommand cmd = new SqlCommand("SELECT * FROM transfers WHERE account_to = @accountId OR account_from = @accountId", conn);
+
+                    cmd.Parameters.AddWithValue("@accountId", accountId);
 
                     SqlDataReader reader = cmd.ExecuteReader();
 
