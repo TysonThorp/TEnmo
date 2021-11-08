@@ -20,5 +20,8 @@ namespace TenmoServer.Models
         public decimal Amount { get; set; }
 
         public int Account_Id { get; set; }
+
+        public Transaction()
+        { }
     }
 }

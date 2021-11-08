@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TenmoClient.Models;
-
+using TenmoServer.Models;
 
 namespace TenmoClient
 {
@@ -112,21 +112,15 @@ namespace TenmoClient
             }
                 else if (menuSelection == 2)
                 {
-                    try
+                    Console.WriteLine("Here is your list of transactions.");
 
-                    {
-                        int id = UserService.GetUserId();
-                        List<System.Transactions.Transaction> transactions1 = transferService.ViewPastTransfers(id);
-                        
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
+
+                    Console.WriteLine(transferService.ViewPastTransfers());
+                    
                 }
                 else if (menuSelection == 3)
                 {
-
+                    
                 }
                 else if (menuSelection == 4)
                 {

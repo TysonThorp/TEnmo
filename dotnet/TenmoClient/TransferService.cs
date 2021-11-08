@@ -13,7 +13,7 @@ namespace TenmoClient
     public class TransferService
     {
         private readonly static string API_BASE_URL = "https://localhost:44315/";
-        private readonly IRestClient client = new RestClient();
+        private readonly RestClient client = new RestClient();
 
         //login endpoints
         
@@ -76,12 +76,12 @@ namespace TenmoClient
             return null;
         }
 
-        public List<Transaction> ViewPastTransfers(int id)
+        public List<Transaction> ViewPastTransfers()
         {
             client.Authenticator = new JwtAuthenticator(UserService.GetToken());
 
             RestRequest request = new RestRequest(API_BASE_URL + "transactions/past");
-            request.AddUrlSegment("id", id);
+            
             IRestResponse<List<Transaction>> response = client.Get<List<Transaction>>(request);
 
             if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
