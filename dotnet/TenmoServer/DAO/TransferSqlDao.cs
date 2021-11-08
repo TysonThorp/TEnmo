@@ -89,9 +89,9 @@ namespace TenmoServer.DAO
 
         }
     
-        public List<Transaction> ViewPastTransfers(int userId)
+        public List<Transactions> ViewPastTransfers(int userId)
         {
-            List<Transaction> transactions = new List<Transaction>();
+            List<Transactions> transactions = new List<Transactions>();
             int accountId = GetAccountId(userId);
             try
             {
@@ -107,7 +107,7 @@ namespace TenmoServer.DAO
 
                     while (reader.Read())
                     {
-                        Transaction transaction = GetTransactionFromReader(reader);
+                        Transactions transaction = GetTransactionFromReader(reader);
                         transactions.Add(transaction);
                     }
                 }
@@ -119,9 +119,9 @@ namespace TenmoServer.DAO
 
             return transactions;
         }
-        public List<Transaction> PendingTransactions(int user_id)
+        public List<Transactions> PendingTransactions(int user_id)
         {
-            List<Transaction> transactions = new List<Transaction>();
+            List<Transactions> transactions = new List<Transactions>();
             int accountId = GetAccountId(user_id);
             try
             {
@@ -134,7 +134,7 @@ namespace TenmoServer.DAO
 
                     while (reader.Read())
                     {
-                        Transaction transaction = GetTransactionFromReader(reader);
+                        Transactions transaction = GetTransactionFromReader(reader);
                         transactions.Add(transaction);
                     }
                 }
@@ -150,9 +150,9 @@ namespace TenmoServer.DAO
 
         }
 
-        public Transaction GetTransactionById(int transferId)
+        public Transactions GetTransactionById(int transferId)
         {
-            Transaction transaction = null;
+            Transactions transaction = null;
 
             try
             {
@@ -181,7 +181,7 @@ namespace TenmoServer.DAO
 
         private int GetAccountId(int user_id)
         {
-            Transaction transaction = new Transaction();
+            Transactions transaction = new Transactions();
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
@@ -210,9 +210,9 @@ namespace TenmoServer.DAO
 
 
         }
-        private Transaction GetTransactionFromReader(SqlDataReader reader)
+        private Transactions GetTransactionFromReader(SqlDataReader reader)
         {
-            Transaction transaction = new Transaction();
+            Transactions transaction = new Transactions();
             {
                 transaction.Transfer_Id = Convert.ToInt32(reader["transfer_id"]);
                 transaction.Transfer_Type_Id = Convert.ToInt32(reader["transfer_type_id"]);

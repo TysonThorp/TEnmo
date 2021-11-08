@@ -27,9 +27,9 @@ namespace TenmoServer.Controllers
 
         [HttpGet("transactions/{transfer_id}")]
 
-        public ActionResult<Transaction> GetTransactionById(int transfer_id)
+        public ActionResult<Transactions> GetTransactionById(int transfer_id)
         {
-            Transaction transaction = _transferDao.GetTransactionById(transfer_id);
+            Transactions transaction = _transferDao.GetTransactionById(transfer_id);
 
             if (transaction != null)
             {
@@ -81,11 +81,11 @@ namespace TenmoServer.Controllers
 
         [HttpGet("transactions/past")]
 
-        public ActionResult<List<Transaction>> ViewPastTransfers(int id)
+        public ActionResult<List<Transactions>> ViewPastTransfers(int id)
         {
             int user_id = Convert.ToInt32(User.FindFirst("sub")?.Value);
 
-            List<Transaction> transfers = _transferDao.ViewPastTransfers(user_id);
+            List<Transactions> transfers = _transferDao.ViewPastTransfers(user_id);
 
             if (transfers != null)
             {
@@ -100,11 +100,11 @@ namespace TenmoServer.Controllers
 
         [HttpGet("transactions/pending")]
 
-        public ActionResult<List<Transaction>> ViewPendingTransfers(int userId)
+        public ActionResult<List<Transactions>> ViewPendingTransfers(int userId)
         {
             int user_id = Convert.ToInt32(User.FindFirst("sub")?.Value);
 
-            List<Transaction> transfers = _transferDao.PendingTransactions(user_id);
+            List<Transactions> transfers = _transferDao.PendingTransactions(user_id);
 
             if (transfers != null)
             {

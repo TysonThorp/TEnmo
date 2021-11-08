@@ -13,11 +13,11 @@ namespace TenmoServer.DAO
 
         public string RequestTEBucks(int userId_from, int userId_to, decimal amount);
 
-        public List<Transaction> ViewPastTransfers(int userId);
+        public List<Transactions> ViewPastTransfers(int userId);
 
-        Transaction GetTransactionById(int transferId);
+        Transactions GetTransactionById(int transferId);
 
-        public List<Transaction> PendingTransactions(int user_id);
+        public List<Transactions> PendingTransactions(int user_id);
 
 
 

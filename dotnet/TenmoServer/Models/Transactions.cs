@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace TenmoServer.Models
 {
-    public class Transaction
+    public class Transactions
     {   
         public int Transfer_Id { get; set; }
 
@@ -21,7 +21,7 @@ namespace TenmoServer.Models
 
         public int Account_Id { get; set; }
 
-        public Transaction()
+        public Transactions()
         { }
     }
 }

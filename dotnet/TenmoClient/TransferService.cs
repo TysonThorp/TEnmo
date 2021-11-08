@@ -22,7 +22,7 @@ namespace TenmoClient
             client.Authenticator = new JwtAuthenticator(UserService.GetToken());
 
             RestRequest request = new RestRequest(API_BASE_URL + "transactions/send");
-            IRestResponse<Transaction> response = client.Post<Transaction>(request);
+            IRestResponse<Transactions> response = client.Post<Transactions>(request);
             UserService.GetToken();
 
             if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
@@ -37,13 +37,13 @@ namespace TenmoClient
             return null;
         }
 
-        public Transaction GetTransactionById(int id)
+        public Transactions GetTransactionById(int id)
         {
             client.Authenticator = new JwtAuthenticator(UserService.GetToken());
 
             RestRequest request = new RestRequest(API_BASE_URL + "transactions/{id}");
             request.AddUrlSegment("id", id);
-            IRestResponse<Transaction> response = client.Get<Transaction>(request);
+            IRestResponse<Transactions> response = client.Get<Transactions>(request);
 
             if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
             {
@@ -62,7 +62,7 @@ namespace TenmoClient
             client.Authenticator = new JwtAuthenticator(UserService.GetToken());
 
             RestRequest request = new RestRequest(API_BASE_URL + "transactions/request");
-            IRestResponse<Transaction> response = client.Post<Transaction>(request);
+            IRestResponse<Transactions> response = client.Post<Transactions>(request);
 
             if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
             {
@@ -76,13 +76,13 @@ namespace TenmoClient
             return null;
         }
 
-        public List<Transaction> ViewPastTransfers()
+        public List<Transactions> ViewPastTransfers()
         {
             client.Authenticator = new JwtAuthenticator(UserService.GetToken());
 
             RestRequest request = new RestRequest(API_BASE_URL + "transactions/past");
             
-            IRestResponse<List<Transaction>> response = client.Get<List<Transaction>>(request);
+            IRestResponse<List<Transactions>> response = client.Get<List<Transactions>>(request);
 
             if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
             {
@@ -96,13 +96,13 @@ namespace TenmoClient
             return null;
         }
 
-        public List<Transaction> ViewPendingTransfer(int id)
+        public List<Transactions> ViewPendingTransfer(int id)
         {
             client.Authenticator = new JwtAuthenticator(UserService.GetToken());
 
             RestRequest request = new RestRequest(API_BASE_URL + "transactions/pending");
             request.AddUrlSegment("id", id);
-            IRestResponse<List<Transaction>> response = client.Get<List<Transaction>>(request);
+            IRestResponse<List<Transactions>> response = client.Get<List<Transactions>>(request);
 
             if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
             {
