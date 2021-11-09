@@ -5,6 +5,7 @@ using TenmoServer.Models;
 using TenmoServer.DAO;
 using System.Collections.Generic;
 using System;
+using Microsoft.AspNetCore.SignalR;
 using TenmoServer.Security;
 
 namespace TenmoServer.Controllers
@@ -16,10 +17,11 @@ namespace TenmoServer.Controllers
     {
       
         private readonly ITransferDao _transferDao;
-        public TransferController(ITransferDao transferDao)
+        private readonly IAccountDao _accountDao;
+        public TransferController(ITransferDao transferDao, IAccountDao accountDao)
         {
             _transferDao = transferDao;
-          
+            _accountDao = accountDao;
         }
 
 
@@ -43,12 +45,12 @@ namespace TenmoServer.Controllers
 
         [HttpPost("transactions/send")]
 
-        public ActionResult<string> SendTeBucks(int userId_from, int userId_to, decimal amount)
+        public ActionResult<string> SendTeBucks()
         {
-            int user_id = Convert.ToInt32(User.FindFirst("sub")?.Value);
-            userId_from = user_id;
+            int accountId = _accountDao.GetAccount(Convert.ToInt32(User.FindFirst("sub")?.Value)).AccountId;
+            int userId = Convert.ToInt32(User.FindFirst("sub")?.Value);
 
-            string transaction1 = _transferDao.SendTEBucks(userId_from, userId_to, amount);
+            string transaction1 = _transferDao.SendTEBucks(accountId, userId);
 
             if (transaction1 != null)
             {
@@ -81,11 +83,11 @@ namespace TenmoServer.Controllers
 
         [HttpGet("transactions/past")]
 
-        public ActionResult<List<Transactions>> ViewPastTransfers()
+        public ActionResult<List<PastTransfer>> ViewPastTransfers()
         {
-            int user_id = Convert.ToInt32(User.FindFirst("sub")?.Value);
-
-            List<Transactions> transfers = _transferDao.ViewPastTransfers(user_id);
+            
+           int accountId = _accountDao.GetAccount(Convert.ToInt32(User.FindFirst("sub")?.Value)).AccountId;
+            List<PastTransfer> transfers = _transferDao.ViewPastTransfers(accountId);
 
             if (transfers != null)
             {
@@ -100,11 +102,11 @@ namespace TenmoServer.Controllers
 
         [HttpGet("transactions/pending")]
 
-        public ActionResult<List<Transactions>> ViewPendingTransfers()
+        public ActionResult<List<PendingTransfer>> ViewPendingTransfers()
         {
-            int user_id = Convert.ToInt32(User.FindFirst("sub")?.Value);
+            int accountId = _accountDao.GetAccount(Convert.ToInt32(User.FindFirst("sub")?.Value)).AccountId;
 
-            List<Transactions> transfers = _transferDao.PendingTransactions(user_id);
+            List<PendingTransfer> transfers = _transferDao.PendingTransactions(accountId);
 
             if (transfers != null)
             {

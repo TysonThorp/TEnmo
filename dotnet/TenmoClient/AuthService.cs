@@ -82,7 +82,7 @@ namespace TenmoClient
             client.Authenticator = new JwtAuthenticator(UserService.GetToken());
 
             RestRequest request = new RestRequest(API_BASE_URL + "balance");
-            IRestResponse<AccountBalance> response = client.Get<AccountBalance>(request);
+            IRestResponse<decimal> response = client.Get<decimal>(request);
             
             if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
             {
@@ -90,30 +90,12 @@ namespace TenmoClient
             }
             else
             {
-                return response.Data.Balance;
+                return response.Data;
             }
 
-            return null;
+            return 0;
         }
-        public string SendTEBucks()
-        {
-            client.Authenticator = new JwtAuthenticator(UserService.GetToken());
-
-            RestRequest request = new RestRequest(API_BASE_URL + "transactions/send");
-            IRestResponse<Transaction> response = client.Post<Transaction>(request);
-           
-
-            if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
-            {
-                ProcessErrorResponse(response);
-            }
-            else
-            {
-                return response.StatusCode.ToString();
-            }
-
-            return null;
-        }
+     
 
         public Transaction GetTransactionById(int id)
         {
@@ -154,45 +136,9 @@ namespace TenmoClient
             return null;
         }
 
-        public List<Transaction> ViewPastTransfers(int id)
-        {
-            client.Authenticator = new JwtAuthenticator(UserService.GetToken());
+       
 
-            RestRequest request = new RestRequest(API_BASE_URL + "transactions");
-            request.AddUrlSegment("id", id);
-            IRestResponse<List<Transaction>> response = client.Get<List<Transaction>>(request);
-
-            if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
-            {
-                ProcessErrorResponse(response);
-            }
-            else
-            {
-                return response.Data;
-            }
-
-            return null;
-        }
-
-        public List<Transaction> ViewPendingTransfer(int id)
-        {
-            client.Authenticator = new JwtAuthenticator(UserService.GetToken());
-
-            RestRequest request = new RestRequest(API_BASE_URL + "transactions");
-            request.AddUrlSegment("id", id);
-            IRestResponse<List<Transaction>> response = client.Get<List<Transaction>>(request);
-
-            if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
-            {
-                ProcessErrorResponse(response);
-            }
-            else
-            {
-                return response.Data;
-            }
-
-            return null;
-        }
+        
 
         private void ProcessErrorResponse(IRestResponse response)
         {

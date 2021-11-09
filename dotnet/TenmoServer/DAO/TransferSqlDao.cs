@@ -20,19 +20,13 @@ namespace TenmoServer.DAO
          //***** REMEMBER CODERS - THE CLIENT IS GOING TO CALL THE METHODS TO MAKE IT HAPPEN, IE: DON'T MAKE THE SERVER DO THINGS THE CLIENT SHOULD DO
          //       WHEN INITIATING A TRANSFER THE CLIENT WILL CALL THE METHODS TO UPDATE THE BALANCES AND ALSO TO INSERT A TRANSACTION RECORD *****
          
-        public string SendTEBucks(int userId_from, int userId_to, decimal amount)
+        public string SendTEBucks(int accountId, int userId)
         {
-            AccountBalance accountBalance = new AccountBalance();
-
-            int accountIdFrom = GetAccountId(userId_from);
-            int accountIdTo = GetAccountId(userId_to);
+            Account accountBalance = new Account();
+            
+            
             string success = "Transfer Successful";
-            string failure = "Insufficient funds - no money transferred.";
-
-            if (accountBalance.Balance < amount)
-            {
-                return failure;
-            }
+            
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
@@ -40,10 +34,10 @@ namespace TenmoServer.DAO
                     conn.Open();
 
 
-                    SqlCommand cmd = new SqlCommand("UPDATE accounts SET balance = balance - @amount WHERE userId_from = @userId_from: UPDATE accounts SET balance + @amount WHERE userId_to = @userId_to", conn);
-                    cmd.Parameters.AddWithValue("@userId_from", userId_from);
+                    SqlCommand cmd = new SqlCommand("UPDATE accounts SET balance = balance - @amount WHERE userId = @userId: UPDATE accounts SET balance + @amount WHERE userId = @userId", conn);
+                    cmd.Parameters.AddWithValue("@userId", userId);
 
-                    SqlCommand cmdd = new SqlCommand("INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) VALUES (2, 2, @accountIdFrom, @accountIdTo, @amount)", conn); 
+                    SqlCommand cmdd = new SqlCommand("INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) VALUES (2, 2, @accountId, @accountId, @amount)", conn); 
 
                     cmd.ExecuteNonQuery();
                     cmdd.ExecuteNonQuery();
@@ -59,7 +53,7 @@ namespace TenmoServer.DAO
         }
         public string RequestTEBucks(int userId_from, int userId_to, decimal amount)
         {
-            AccountBalance accountBalance = new AccountBalance();
+            Account accountBalance = new Account();
 
             int accountIdFrom = GetAccountId(userId_from);
             int accountIdTo = GetAccountId(userId_to);
@@ -88,19 +82,24 @@ namespace TenmoServer.DAO
             }
 
         }
-    
-        public List<Transactions> ViewPastTransfers(int userId)
+
+        public List<PastTransfer> ViewPastTransfers(int accountId)
         {
-            List<Transactions> transactions = new List<Transactions>();
-            int accountId = GetAccountId(userId);
+            List<PastTransfer> viewPast = new List<PastTransfer>();
+
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
 
-                    SqlCommand cmd = new SqlCommand("SELECT transfer_id, account_from, account_to, amount " +
-                        "FROM transfers WHERE account_to = @accountId OR account_from = @accountId", conn);
+                    SqlCommand cmd = new SqlCommand("SELECT t.transfer_id, fu.username AS fromName, tu.username AS toName, t.amount " +
+                                                    "FROM transfers t " +
+                                                    "JOIN accounts fa ON fa.account_id = t.account_from " +
+                                                    "JOIN users fu ON fu.user_id = fa.user_id " +
+                                                    "JOIN accounts ta ON ta.account_id = t.account_to " +
+                                                    "JOIN users tu ON tu.user_id = ta.user_id " +
+                                                    "WHERE t.account_from = @accountId OR t.account_to = @accountId ", conn);
 
                     cmd.Parameters.AddWithValue("@accountId", accountId);
 
@@ -108,9 +107,10 @@ namespace TenmoServer.DAO
 
                     while (reader.Read())
                     {
-                        Transactions transaction = GetTransactionFromReader(reader);
-                        transactions.Add(transaction);
+                        PastTransfer past = GetPastTransactionsFromReader(reader);
+                        viewPast.Add(past);
                     }
+
                 }
             }
             catch (SqlException)
@@ -118,25 +118,31 @@ namespace TenmoServer.DAO
                 throw;
             }
 
-            return transactions;
+            return viewPast;
         }
-        public List<Transactions> PendingTransactions(int user_id)
+        public List<PendingTransfer> PendingTransactions(int accountId)
         {
-            List<Transactions> transactions = new List<Transactions>();
-            int accountId = GetAccountId(user_id);
+            List<PendingTransfer> pendingTransfers = new List<PendingTransfer>();
+            
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
 
-                    SqlCommand cmd = new SqlCommand("SELECT * FROM transfers JOIN transfer_statuses ON transfer_statuses.transfer_status_id = transfers.transfer_status_id WHERE transfer_statuses.transfer_status_desc = 'Pending' AND transfers.account_from = @accountId", conn);
+                    SqlCommand cmd = new SqlCommand("SELECT transfers.transfer_id, users.username AS FromName, transfers.amount " +
+                                                    "FROM transfers " +
+                                                    "JOIN transfer_statuses tr ON tr.transfer_status_id = transfers.transfer_status_id " +
+                                                    "JOIN accounts ac ON ac.account_id = transfers.account_from " +
+                                                    "JOIN users ON users.user_id = ac.user_id " +
+                                                    "WHERE tr.transfer_status_id = 1 ", conn);
+
                     SqlDataReader reader = cmd.ExecuteReader();
 
                     while (reader.Read())
                     {
-                        Transactions transaction = GetTransactionFromReader(reader);
-                        transactions.Add(transaction);
+                        PendingTransfer transaction = GetPendingTransactionsFromReader(reader);
+                        pendingTransfers.Add(transaction);
                     }
                 }
             }
@@ -145,7 +151,7 @@ namespace TenmoServer.DAO
                 throw;
             }
 
-            return transactions;
+            return pendingTransfers;
 
 
 
@@ -180,9 +186,9 @@ namespace TenmoServer.DAO
             return transaction;
         }
 
-        private int GetAccountId(int user_id)
+        private int GetAccountId(int userId)
         {
-            Transactions transaction = new Transactions();
+            int accountId;
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
@@ -190,15 +196,15 @@ namespace TenmoServer.DAO
                     conn.Open();
 
                     SqlCommand cmd = new SqlCommand("SELECT account_id FROM accounts WHERE user_id = @user_id", conn);
-                    cmd.Parameters.AddWithValue("@user_id", user_id);
+                    cmd.Parameters.AddWithValue("@user_id", userId);
 
                     SqlDataReader reader = cmd.ExecuteReader();
 
                     if (reader.Read())
                     {
                         
-                        transaction.Account_Id = Convert.ToInt32(reader["account_id"]);
-                        return transaction.Account_Id;
+                        accountId = Convert.ToInt32(reader["account_id"]);
+                        return accountId;
                     }
                 }
             }
@@ -207,24 +213,48 @@ namespace TenmoServer.DAO
                 throw;
             }
 
-            return transaction.Account_Id;
+            return 0;
 
 
+        }
+        private PastTransfer GetPastTransactionsFromReader(SqlDataReader reader)
+        {
+            PastTransfer pastTransfer = new PastTransfer();
+            {
+                pastTransfer.ToName = Convert.ToString(reader["toName"]);
+                pastTransfer.FromName = Convert.ToString(reader["fromName"]);
+                pastTransfer.TransferId = Convert.ToInt32(reader["transfer_id"]);
+                pastTransfer.Amount = Convert.ToDecimal(reader["amount"]);
+            }
+            return pastTransfer;
         }
         private Transactions GetTransactionFromReader(SqlDataReader reader)
         {
             Transactions transaction = new Transactions();
             {
                 transaction.Transfer_Id = Convert.ToInt32(reader["transfer_id"]);
-                transaction.Transfer_Type_Id = Convert.ToInt32(reader["transfer_type_id"]);
+                transaction.TransferTypeId = Convert.ToInt32(reader["transfer_type_id"]);
                 transaction.Transfer_Status_Id = Convert.ToInt32(reader["transfer_status_id"]);
                 transaction.Account_From = Convert.ToInt32(reader["account_from"]);
                 transaction.Account_To = Convert.ToInt32(reader["account_to"]);
-                transaction.Amount = Convert.ToDecimal(reader["amount"])
+                transaction.Amount = Convert.ToDecimal(reader["amount"]);
+                
 
             }
 
             return transaction;
+        }
+
+        private PendingTransfer GetPendingTransactionsFromReader(SqlDataReader reader)
+        {
+            PendingTransfer pendingTransfer = new PendingTransfer();
+            {
+                pendingTransfer.TransferId = Convert.ToInt32(reader["transfer_id"]);
+                pendingTransfer.Amount = Convert.ToDecimal(reader["amount"]);
+                pendingTransfer.FromName = Convert.ToString(reader["fromName"]);
+
+            }
+            return pendingTransfer;
         }
     }
 }

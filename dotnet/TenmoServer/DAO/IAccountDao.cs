@@ -6,9 +6,9 @@ using TenmoServer.Models;
 
 namespace TenmoServer.DAO
 {
-    public interface IAccountBalanceDao
+    public interface IAccountDao
     {
-        AccountBalance GetBalance(int account_id);
+        Account GetAccount(int userId);
         
     }
 }
