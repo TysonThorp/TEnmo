@@ -25,5 +25,13 @@ namespace TenmoClient
         {
             return user?.Token ?? string.Empty;
         }
+
+        public static string GetUserName()
+        {
+            return user.Username;
+
+        }
+
+       
     }
 }

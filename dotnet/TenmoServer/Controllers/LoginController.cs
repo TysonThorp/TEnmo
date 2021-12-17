@@ -21,7 +21,7 @@ namespace TenmoServer.Controllers
         }
 
         [HttpPost]
-        public IActionResult Authenticate(LoginUser userParam)
+        public IActionResult Authenticate(LoginUsers userParam)
         {
             // Default to bad username/password message
             IActionResult result = BadRequest(new { message = "Username or password is incorrect" });
@@ -46,7 +46,7 @@ namespace TenmoServer.Controllers
         }
 
         [HttpPost("register")]
-        public IActionResult Register(LoginUser userParam)
+        public IActionResult Register(LoginUsers userParam)
         {
             IActionResult result;
 

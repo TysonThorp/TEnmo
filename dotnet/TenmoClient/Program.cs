@@ -1,9 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using TenmoClient.Models;
+<<<<<<< HEAD
 using TenmoClient.Exceptions;
 
 
+=======
+using TenmoServer.Models;
+using Account = TenmoClient.Models.Account;
+using PastTransfer = TenmoClient.Models.PastTransfer;
+using PendingTransfer = TenmoClient.Models.PendingTransfer;
+>>>>>>> 7481a4d6f0c95ae13218abfd76a83c5972cc15b3
 
 
 namespace TenmoClient
@@ -12,7 +19,6 @@ namespace TenmoClient
     {
         private static readonly ConsoleService consoleService = new ConsoleService();
         private static readonly AuthService authService = new AuthService();
-        private static readonly AccountService accountService = new AccountService();
         private static readonly TransferService transferService = new TransferService();
 
         static void Main(string[] args)
@@ -100,7 +106,7 @@ namespace TenmoClient
                 {
                     try
                     {
-                        decimal? balance = accountService.GetBalance();
+                        decimal? balance = authService.GetBalance();
                         if (balance != null)
                         {
 
@@ -115,6 +121,7 @@ namespace TenmoClient
             }
                 else if (menuSelection == 2)
                 {
+<<<<<<< HEAD
                     //List<TransferService> viewPastTransfers = transferService.ViewPastTransfers();
                     
                     //Console.Write("These are all the transfers you have made in the past: " + viewPastTransfers);                  
@@ -124,10 +131,86 @@ namespace TenmoClient
                     //List<TransferService> viewPendingTransfers = transferService.PendingTransactions();
 
                     //Console.Write("These are all the transfers that are currently pending: " + viewPendingTransfers);
+=======
+                    Console.WriteLine("------------------------------");
+                    Console.WriteLine("Transfers");
+                    Console.WriteLine("ID         From/To            Amount");
+                    Console.WriteLine("------------------------------");
+
+
+                    List<PastTransfer> pastTransfers = new List<PastTransfer>(transferService.ViewPastTransfers());
+
+                    foreach (PastTransfer transfer in pastTransfers)
+                    {
+                        
+
+                        if (transfer.FromName == UserService.GetUserName())
+                        {
+                            Console.WriteLine($"{transfer.TransferId}       To: {transfer.ToName}         ${transfer.Amount}");
+                        }
+                        else if (transfer.ToName == UserService.GetUserName())
+                        {
+                            Console.WriteLine($"{transfer.TransferId}       From: {transfer.FromName}         ${transfer.Amount}");
+                        }
+                        
+                        
+                   
+                    }
+                    Console.WriteLine("Please enter transfer ID to view details (0 to cancel)");
+                    
+                }
+                else if (menuSelection == 3)
+                {
+                    Console.WriteLine("----------------------------------------");
+                    Console.WriteLine("Pending Transfers");
+                    Console.WriteLine("ID            To              Amount");
+                    Console.WriteLine("----------------------------------------");
+
+                    List<PendingTransfer> pending = new List<PendingTransfer>(transferService.ViewPendingTransfer());
+
+                    foreach (PendingTransfer transfer in pending)
+                    {
+                        if (transfer.FromName != UserService.GetUserName())
+                        {
+                            Console.WriteLine($"{transfer.TransferId}       To: {transfer.FromName}         ${transfer.Amount}");
+                        }
+                    }
+                    Console.WriteLine("Please enter transfer ID to approve/reject (0 to cancel):");
+>>>>>>> 7481a4d6f0c95ae13218abfd76a83c5972cc15b3
                 }
                 else if (menuSelection == 4)
                 {
+                    Console.WriteLine("----------------------------------------");
+                    Console.WriteLine("Users");
+                    Console.WriteLine("ID            Name");
+                    Console.WriteLine("----------------------------------------");
 
+                    
+
+                    List<ApiUser> userIds = new List<ApiUser>(UserService.GetUserId());
+
+                    foreach (ApiUser user in userIds)
+                    {
+                        Console.WriteLine(user.UserId);
+                    }
+
+                    //if (transfer.FromName == UserService.GetUserName())
+                    //{
+                    //    Console.WriteLine($"{userIds}           {UserService.GetUserName()}");
+
+                    //}
+
+                        //string send = transferService.SendTEBucks();
+
+                   
+
+                    //decimal amount = Convert.ToDecimal(Console.ReadLine());
+                    //string failure = "Insufficient funds - no money transferred.";
+
+                    //if (accountBalance.Balance < amount)
+                    //{
+                    //    return failure;
+                    //}
                 }
                 else if (menuSelection == 5)
                 {

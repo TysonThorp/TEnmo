@@ -7,17 +7,17 @@ using TenmoServer.Security.Models;
 
 namespace TenmoServer.DAO
 {
-    public class AccountBalanceSqlDao : IAccountBalanceDao
+    public class AccountSqlDao : IAccountDao
     {
         private readonly string connectionString;
      
-        public AccountBalanceSqlDao(string dbConnectionString)
+        public AccountSqlDao(string dbConnectionString)
         {
             connectionString = dbConnectionString;
         }
-        public AccountBalance GetBalance(int user_id)
+        public Account GetAccount(int userId)
         {
-            AccountBalance accountBalance = null;
+            Account account = null;
 
             try
             {
@@ -25,13 +25,13 @@ namespace TenmoServer.DAO
                 {
                     conn.Open();
 
-                    SqlCommand cmd = new SqlCommand("SELECT balance FROM accounts WHERE user_id = @user_id", conn);
-                    cmd.Parameters.AddWithValue("@user_id", user_id);
+                    SqlCommand cmd = new SqlCommand("SELECT account_id, user_id, balance FROM accounts WHERE user_id = @user_id", conn);
+                    cmd.Parameters.AddWithValue("@user_id", userId);
                     SqlDataReader reader = cmd.ExecuteReader();
 
                     if (reader.Read())
                     {
-                        accountBalance = GetBalanceFromReader(reader);
+                        account = GetAccountFromReader(reader);
                     }
                 }
             }
@@ -40,18 +40,19 @@ namespace TenmoServer.DAO
                 throw;
             }
 
-            return accountBalance;
+            return account;
         }
 
-        private AccountBalance GetBalanceFromReader(SqlDataReader reader)
+        private Account GetAccountFromReader(SqlDataReader reader)
         {
-            AccountBalance b = new AccountBalance()
+            Account account = new Account()
             {
-               Balance = Convert.ToDecimal(reader["balance"]),
-               
+                Balance = Convert.ToDecimal(reader["balance"]),
+                AccountId = Convert.ToInt32(reader["account_id"]),
+                UserId = Convert.ToInt32(reader["user_id"]),
             };
 
-            return b;
+            return account;
         }
     }
 }

@@ -5,6 +5,7 @@ using TenmoServer.Models;
 using TenmoServer.DAO;
 using System.Collections.Generic;
 using System;
+using TenmoServer.Security;
 
 namespace TenmoServer.Controllers
 {
@@ -13,22 +14,21 @@ namespace TenmoServer.Controllers
     [Authorize]
     public class AccountController : ControllerBase
     {
-        private readonly IAccountBalanceDao _accountDao;
+        private readonly IAccountDao _accountDao;
        
-        public AccountController(IAccountBalanceDao accountDao)
+        public AccountController(IAccountDao accountDao)
         {
             _accountDao = accountDao;
         }
 
-
         [HttpGet("balance")]  //to get this you need to pass a token b/c of authorize
-        public ActionResult<AccountBalance> GetBalance()
+        public ActionResult<decimal> GetBalance()
         {
-            int user_id = Convert.ToInt32(User.FindFirst("sub")?.Value);  //this gets the id from the token (exists already since the user logged in)
+            int userId = Convert.ToInt32(User.FindFirst("sub")?.Value);  //this gets the id from the token (exists already since the user logged in)
 
-            AccountBalance balance = _accountDao.GetBalance(user_id);
+            decimal balance = _accountDao.GetAccount(userId).Balance;
 
-            if (balance != null)
+            if (balance != 0)
             {
                 return Ok(balance);
             }

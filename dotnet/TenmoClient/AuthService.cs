@@ -4,6 +4,12 @@ using System;
 using TenmoClient.Exceptions;
 using TenmoClient.Models;
 
+using System.Transactions;
+
+using System.Collections.Generic;
+
+/* */
+
 namespace TenmoClient
 {
     public class AuthService
@@ -71,8 +77,82 @@ namespace TenmoClient
             }
         }
 
+        public decimal? GetBalance()
+        {
+            client.Authenticator = new JwtAuthenticator(UserService.GetToken());
 
+            RestRequest request = new RestRequest(API_BASE_URL + "balance");
+            IRestResponse<decimal> response = client.Get<decimal>(request);
+            
+            if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
+            {
+                ProcessErrorResponse(response);
+            }
+            else
+            {
+                return response.Data;
+            }
 
+            return 0;
+        }
+     
 
+        public Transaction GetTransactionById(int id)
+        {
+            client.Authenticator = new JwtAuthenticator(UserService.GetToken());
+
+            RestRequest request = new RestRequest(API_BASE_URL + "transactions/{id}");
+            request.AddUrlSegment("id", id);
+            IRestResponse<Transaction> response = client.Get<Transaction>(request);
+
+            if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
+            {
+                ProcessErrorResponse(response);
+            }
+            else
+            {
+                return response.Data;
+            }
+
+            return null;
+        }
+
+        public string RequestTeBucks()
+        {
+            client.Authenticator = new JwtAuthenticator(UserService.GetToken());
+
+            RestRequest request = new RestRequest(API_BASE_URL + "transactions/request");
+            IRestResponse<Transaction> response = client.Post<Transaction>(request);
+
+            if (response.ResponseStatus != ResponseStatus.Completed || !response.IsSuccessful)
+            {
+                ProcessErrorResponse(response);
+            }
+            else
+            {
+                return response.StatusCode.ToString();
+            }
+
+            return null;
+        }
+
+       
+
+        
+
+        private void ProcessErrorResponse(IRestResponse response)
+        {
+            if (response.ResponseStatus != ResponseStatus.Completed)
+            {
+                throw new NoResponseException("Error occurred - unable to reach server.", response.ErrorException);
+            }
+            else if (!response.IsSuccessful)
+            {
+                throw new NonSuccessException((int)response.StatusCode);
+            }
+        }
     }
+
+
 }
+
